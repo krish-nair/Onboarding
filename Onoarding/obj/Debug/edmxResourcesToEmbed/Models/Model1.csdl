@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="OnboardingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="ProductSolds" Relationship="Self.FK_dbo_ProductSolds_dbo_Customers_CustomerId" FromRole="Customers" ToRole="ProductSolds" />
+  </EntityType>
+  <EntityType Name="Product">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Price" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <NavigationProperty Name="ProductSolds" Relationship="Self.FK_dbo_ProductSolds_dbo_Products_ProductId" FromRole="Products" ToRole="ProductSolds" />
+  </EntityType>
+  <EntityType Name="ProductSold">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ProductId" Type="Int32" Nullable="false" />
+    <Property Name="CustomerId" Type="Int32" Nullable="false" />
+    <Property Name="StoreId" Type="Int32" Nullable="false" />
+    <Property Name="DateSold" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="Customer" Relationship="Self.FK_dbo_ProductSolds_dbo_Customers_CustomerId" FromRole="ProductSolds" ToRole="Customers" />
+    <NavigationProperty Name="Product" Relationship="Self.FK_dbo_ProductSolds_dbo_Products_ProductId" FromRole="ProductSolds" ToRole="Products" />
+    <NavigationProperty Name="Store" Relationship="Self.FK_dbo_ProductSolds_dbo_Stores_StoreId" FromRole="ProductSolds" ToRole="Stores" />
+  </EntityType>
+  <EntityType Name="Store">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="ProductSolds" Relationship="Self.FK_dbo_ProductSolds_dbo_Stores_StoreId" FromRole="Stores" ToRole="ProductSolds" />
+  </EntityType>
+  <Association Name="FK_dbo_ProductSolds_dbo_Customers_CustomerId">
+    <End Role="Customers" Type="Self.Customer" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ProductSolds" Type="Self.ProductSold" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customers">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="ProductSolds">
+        <PropertyRef Name="CustomerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_ProductSolds_dbo_Products_ProductId">
+    <End Role="Products" Type="Self.Product" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ProductSolds" Type="Self.ProductSold" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Products">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="ProductSolds">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_ProductSolds_dbo_Stores_StoreId">
+    <End Role="Stores" Type="Self.Store" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ProductSolds" Type="Self.ProductSold" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Stores">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="ProductSolds">
+        <PropertyRef Name="StoreId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="OnboardingEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Customers" EntityType="Self.Customer" />
+    <EntitySet Name="Products" EntityType="Self.Product" />
+    <EntitySet Name="ProductSolds" EntityType="Self.ProductSold" />
+    <EntitySet Name="Stores" EntityType="Self.Store" />
+    <AssociationSet Name="FK_dbo_ProductSolds_dbo_Customers_CustomerId" Association="Self.FK_dbo_ProductSolds_dbo_Customers_CustomerId">
+      <End Role="Customers" EntitySet="Customers" />
+      <End Role="ProductSolds" EntitySet="ProductSolds" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_ProductSolds_dbo_Products_ProductId" Association="Self.FK_dbo_ProductSolds_dbo_Products_ProductId">
+      <End Role="Products" EntitySet="Products" />
+      <End Role="ProductSolds" EntitySet="ProductSolds" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_ProductSolds_dbo_Stores_StoreId" Association="Self.FK_dbo_ProductSolds_dbo_Stores_StoreId">
+      <End Role="Stores" EntitySet="Stores" />
+      <End Role="ProductSolds" EntitySet="ProductSolds" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
